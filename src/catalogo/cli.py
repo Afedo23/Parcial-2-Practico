@@ -48,7 +48,7 @@ def cmd_importar(a):
     esperar_bd(_url())
     c = _conn()
     migrar(c)
-    ruta = a.archivo or os.environ.get("IMPORT_FILE", "data/CatalogoServicios.xlsx")
+    ruta = getattr(a, "archivo", None) or os.environ.get("IMPORT_FILE", "data/CatalogoServicios.xlsx")
     try:
         resumen, obs = importar(c, ruta)
     except ErrorImportacion as e:
@@ -63,7 +63,7 @@ def cmd_importar(a):
     print("  Filas:", resumen["filas"])
     print("  Controles:", resumen["controles"])
     print(f"  Observaciones ({resumen['observaciones']}): {json.dumps(resumen['por_tipo'], ensure_ascii=False)}")
-    if a.detalle:
+    if getattr(a, "detalle", False):
         for o in obs:
             print(f"   - [{o['tipo']}] {o['codigo'] or '-'} {o['rango']}: {o['detalle']}")
     if not resumen["controles"]["ok"]:
