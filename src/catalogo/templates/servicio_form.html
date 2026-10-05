@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>{{ 'Editar servicio ' ~ reg.codigo if editando else 'Nuevo servicio de nivel 2' }}</h1>
+<form class="card" method="post">{{ m.csrf() }}
+<label>Código</label><input name="codigo" value="{{ reg.get('codigo','') }}" maxlength="40" required>
+<label>Nombre</label><input name="nombre" value="{{ reg.get('nombre','') }}" maxlength="300" required>
+<label>Servicio de nivel 1</label><select name="nivel1_id" required><option value="">Seleccione…</option>{% for n in n1s %}<option value="{{ n.id }}" {{ 'selected' if reg.get('nivel1_id')|string==n.id|string }}>{{ n.codigo }} · {{ n.nombre }}</option>{% endfor %}</select>
+<label>ACTIVO (indicador del Excel)</label><select name="indicador_activo"><option value="">Sin definir</option>{% for v in ['S','N'] %}<option {{ 'selected' if reg.get('indicador_activo')==v }}>{{ v }}</option>{% endfor %}</select>
+<label>Clase de servicio</label><select name="clase_id"><option value="">Sin definir</option>{% for c in cat.clase %}<option value="{{ c.id }}" {{ 'selected' if reg.get('clase_id')|string==c.id|string }}>{{ c.nombre }}</option>{% endfor %}</select>
+<label>Criticidad</label><select name="criticidad_id"><option value="">Sin definir</option>{% for c in cat.criticidad %}<option value="{{ c.id }}" {{ 'selected' if reg.get('criticidad_id')|string==c.id|string }}>{{ c.nombre }}</option>{% endfor %}</select>
+<label>Tipo de servicio</label><select name="tipo_id"><option value="">Sin definir</option>{% for c in cat.tipo %}<option value="{{ c.id }}" {{ 'selected' if reg.get('tipo_id')|string==c.id|string }}>{{ c.nombre }}</option>{% endfor %}</select>
+<label>Descripción</label><textarea name="descripcion" rows="3">{{ reg.get('descripcion') or '' }}</textarea>
+<label>Métrica</label><input name="metrica" value="{{ reg.get('metrica') or '' }}">
+<div class="filtros"><div><label>Mínimo</label><input name="minimo" inputmode="decimal" value="{{ reg.get('minimo') if reg.get('minimo') is not none else '' }}"></div>
+<div><label>Máximo</label><input name="maximo" inputmode="decimal" value="{{ reg.get('maximo') if reg.get('maximo') is not none else '' }}"></div></div>
+<label>Sección responsable</label><select name="seccion_id" id="seccion"><option value="">Sin asignar</option>{% for s in secciones %}<option value="{{ s.id }}" {{ 'selected' if reg.get('seccion_id')|string==s.id|string }}>{{ s.ruta }} / {{ s.codigo }} · {{ s.nombre }}</option>{% endfor %}</select>
+<label>Usuario responsable (de esa sección)</label><select name="usuario_id" id="usuario"><option value="">Sin asignar</option>{% for u in usuarios_sec %}<option value="{{ u.id }}" data-seccion="{{ u.seccion_id }}" {{ 'selected' if reg.get('usuario_id')|string==u.id|string }}>{{ u.nombre }} ({{ u.login }})</option>{% endfor %}</select>
+<small class="muted">El servidor valida que el usuario pertenezca a la sección elegida.</small>
+<p><button type="submit">Guardar</button> <a class="btn sec" href="{{ url_for('panel.lista') }}">Cancelar</a></p></form>
+<script>
+const s=document.getElementById('seccion'),u=document.getElementById('usuario');
+function f(){for(const o of u.options){if(!o.value)continue;o.hidden=o.dataset.seccion!==s.value}}
+s.addEventListener('change',()=>{u.value='';f()});f();
+</script>{% endblock %}

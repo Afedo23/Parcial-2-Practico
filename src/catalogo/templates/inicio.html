@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Resumen</h1>
+<div class="grid">
+<div class="card"><div class="num">{{ d.n1 }}</div>Servicios de nivel 1</div>
+<div class="card"><div class="num">{{ d.n2 }}</div>Servicios de nivel 2</div>
+<div class="card"><div class="num">{{ d.revision }}</div>Servicios en revisión (datos incompletos)</div>
+<div class="card"><div class="num">{{ d.asignados }}</div>Servicios con sección asignada</div>
+<div class="card"><div class="num">{{ d.usuarios }}</div>Usuarios activos</div>
+</div>{% endblock %}

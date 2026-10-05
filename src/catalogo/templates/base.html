@@ -1,0 +1,23 @@
+{% import "macros.html" as m with context %}<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block titulo %}Catálogo de servicios{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+<header>
+  <strong>Catálogo de servicios TI</strong>
+  {% if usuario %}
+  <a href="{{ url_for('panel.inicio') }}">Inicio</a>
+  <a href="{{ url_for('panel.lista') }}">Servicios N2</a>
+  <a href="{{ url_for('panel.lista_n1') }}">Servicios N1</a>
+  <a href="{{ url_for('org.indice') }}">Organización</a>
+  <a href="{{ url_for('usuarios.lista') }}">Usuarios</a>
+  <a href="{{ url_for('importaciones.lista') }}">Importaciones</a>
+  <span class="sp"></span>
+  <span>{{ usuario.nombre }} ({{ usuario.rol }})</span>
+  <form method="post" action="{{ url_for('auth.logout') }}">{{ m.csrf() }}<button class="sec" type="submit">Cerrar sesión</button></form>
+  {% endif %}
+</header>
+<main>
+{% with mensajes = get_flashed_messages(with_categories=true) %}{% for cat, txt in mensajes %}<div class="msg {{ cat }}">{{ txt }}</div>{% endfor %}{% endwith %}
+{% block contenido %}{% endblock %}
+</main></body></html>

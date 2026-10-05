@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Servicios de nivel 1</h1>
+<form class="card filtros" method="get"><div><label>Buscar</label><input name="q" value="{{ args.get('q','') }}"></div>
+<div><label>Estado</label><select name="estado"><option value="">Todos</option><option value="activo" {{ 'selected' if args.get('estado')=='activo' }}>Activo</option><option value="inactivo" {{ 'selected' if args.get('estado')=='inactivo' }}>Inactivo</option></select></div>
+<div><button type="submit">Filtrar</button></div></form>
+{% if es_admin %}<p><a class="btn" href="{{ url_for('panel.nuevo_n1') }}">+ Nuevo nivel 1</a></p>{% endif %}
+<div class="tablewrap"><table><tr><th>Código</th><th>Nombre</th><th>Servicios N2</th><th>Revisión</th><th>Estado</th></tr>
+{% for f in filas %}<tr><td><a href="{{ url_for('panel.detalle_n1', id_=f.id) }}">{{ f.codigo }}</a></td><td>{{ f.nombre }}</td><td>{{ f.cant_n2 }}</td><td>{% if f.estado_revision=='REVISION' %}<span class="badge rev">Revisión</span>{% endif %}</td><td>{{ m.estado(f.activo) }}</td></tr>{% endfor %}</table></div>
+{{ m.paginacion(pg, 'panel.lista_n1', args) }}{% endblock %}

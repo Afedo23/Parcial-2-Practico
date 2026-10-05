@@ -1,0 +1,10 @@
+{% macro csrf() %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endmacro %}
+{% macro estado(activo) %}<span class="badge {{ 'on' if activo else 'off' }}">{{ 'Activo' if activo else 'Inactivo' }}</span>{% endmacro %}
+{% macro paginacion(pg, endpoint, args) %}
+{% if pg.paginas > 1 %}<div class="pag">
+  {% set base = args.to_dict() if args.to_dict is defined else args %}
+  {% if pg.pagina > 1 %}<a class="btn sec" href="{{ url_for(endpoint, **dict(base, pagina=pg.pagina-1, **kwargs)) }}">« Anterior</a>{% endif %}
+  <span>Página {{ pg.pagina }} de {{ pg.paginas }} ({{ pg.total }} registros)</span>
+  {% if pg.pagina < pg.paginas %}<a class="btn sec" href="{{ url_for(endpoint, **dict(base, pagina=pg.pagina+1, **kwargs)) }}">Siguiente »</a>{% endif %}
+</div>{% else %}<p><small class="muted">{{ pg.total }} registros</small></p>{% endif %}
+{% endmacro %}

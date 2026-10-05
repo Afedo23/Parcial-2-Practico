@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Nuevo servicio de nivel 1</h1>
+<form class="card" method="post">{{ m.csrf() }}<label>Código</label><input name="codigo" value="{{ reg.get('codigo','') }}" maxlength="40" required>
+<label>Nombre</label><input name="nombre" value="{{ reg.get('nombre','') }}" maxlength="300" required>
+<p><button type="submit">Guardar</button> <a class="btn sec" href="{{ url_for('panel.lista_n1') }}">Cancelar</a></p></form>{% endblock %}

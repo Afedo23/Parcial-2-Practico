@@ -1,0 +1,60 @@
+name: catalogo-servicios
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-catalogo}
+      POSTGRES_USER: ${POSTGRES_USER:-catalogo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD en .env (copie .env.example)}
+    volumes:
+      - pgdata:/var/lib/postgresql/data      # persistencia: sobrevive a down / restart
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-catalogo}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-catalogo}
+      SECRET_KEY: ${SECRET_KEY:?Defina SECRET_KEY en .env (copie .env.example)}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SESSION_HORAS: ${SESSION_HORAS:-8}
+      IMPORT_FILE: /app/data/CatalogoServicios.xlsx
+      DEMO_ADMIN_LOGIN: ${DEMO_ADMIN_LOGIN:-admin.demo}
+      DEMO_ADMIN_PASSWORD: ${DEMO_ADMIN_PASSWORD:-}
+      DEMO_CONSULTA_LOGIN: ${DEMO_CONSULTA_LOGIN:-consulta.demo}
+      DEMO_CONSULTA_PASSWORD: ${DEMO_CONSULTA_PASSWORD:-}
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - ./data:/app/data:ro                  # el Excel original se monta en solo lectura
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/salud', timeout=3).status == 200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  # Pruebas automatizadas: base de datos SEPARADA (catalogo_test) para no destruir los datos de evaluación.
+  #   docker compose --profile test run --rm tests
+  tests:
+    build: .
+    profiles: ["test"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      TEST_DATABASE_URL: postgresql://${POSTGRES_USER:-catalogo}:${POSTGRES_PASSWORD}@db:5432/catalogo_test
+      SECRET_KEY: ${SECRET_KEY:?Defina SECRET_KEY en .env}
+    command: ["python", "-m", "unittest", "discover", "-s", "tests", "-v"]
+
+volumes:
+  pgdata:

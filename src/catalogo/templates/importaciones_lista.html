@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Importaciones del Excel</h1>
+<div class="tablewrap"><table><tr><th>#</th><th>Fecha (UTC)</th><th>Archivo</th><th>Estado</th><th>N1 (c/a/o/obs)</th><th>N2 (c/a/o/obs)</th><th>Observaciones</th></tr>
+{% for f in filas %}{% set d = f.datos %}<tr><td><a href="{{ url_for('importaciones.detalle', id_=f.id) }}">{{ f.id }}</a></td><td>{{ f.iniciada|fecha }}</td><td>{{ f.archivo }}</td><td>{{ f.estado }}</td>
+<td>{% if d.n1 %}{{ d.n1.creados }}/{{ d.n1.actualizados }}/{{ d.n1.omitidos }}/{{ d.n1.observados }}{% endif %}</td><td>{% if d.n2 %}{{ d.n2.creados }}/{{ d.n2.actualizados }}/{{ d.n2.omitidos }}/{{ d.n2.observados }}{% endif %}</td><td>{{ d.observaciones }}</td></tr>
+{% else %}<tr><td colspan="7">Aún no hay importaciones. Ejecute <code>docker compose exec app python -m catalogo.cli importar</code>.</td></tr>{% endfor %}</table></div>
+<h2>Mapeo de etiquetas corregidas</h2>
+<div class="tablewrap"><table><tr><th>Campo</th><th>Valor original</th><th>Valor aplicado</th><th>Motivo</th></tr>{% for x in mapeos %}<tr><td>{{ x.campo }}</td><td>{{ x.valor_origen }}</td><td>{{ x.valor_destino }}</td><td>{{ x.motivo }}</td></tr>{% else %}<tr><td colspan="4">Sin correcciones.</td></tr>{% endfor %}</table></div>{% endblock %}

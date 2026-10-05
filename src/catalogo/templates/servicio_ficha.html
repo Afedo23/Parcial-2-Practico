@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>{{ reg.codigo }} · {{ reg.nombre }} {{ m.estado(reg.activo) }} {% if reg.estado_revision=='REVISION' %}<span class="badge rev">En revisión: datos incompletos</span>{% endif %}</h1>
+<div class="card"><dl>
+<dt>Servicio de nivel 1</dt><dd><a href="{{ url_for('panel.detalle_n1', id_=reg.nivel1_id) }}">{{ reg.n1_codigo }} · {{ reg.n1_nombre }}</a></dd>
+<dt>ACTIVO (Excel)</dt><dd>{{ reg.indicador_activo or 'Desconocido' }}</dd>
+<dt>Clase de servicio</dt><dd>{{ reg.clase or 'Sin definir' }}</dd><dt>Criticidad</dt><dd>{{ reg.criticidad or 'Sin definir' }}</dd><dt>Tipo de servicio</dt><dd>{{ reg.tipo or 'Sin definir' }}</dd>
+<dt>Descripción</dt><dd>{{ reg.descripcion or '—' }}</dd><dt>Métrica</dt><dd>{{ reg.metrica or '—' }}</dd>
+<dt>Mínimo / Máximo</dt><dd>{{ reg.minimo|numero }} / {{ reg.maximo|numero }}</dd>
+<dt>Sección responsable</dt><dd>{% if reg.seccion_id %}<a href="{{ url_for('org.detalle', nivel='seccion', id_=reg.seccion_id) }}">{{ reg.seccion_codigo }} · {{ reg.seccion_nombre }}</a>{% else %}Sin asignar{% endif %}</dd>
+<dt>Usuario responsable</dt><dd>{{ reg.responsable_nombre or 'Sin asignar' }}</dd></dl></div>
+<div class="card"><h2>Trazabilidad de la importación</h2><dl><dt>Código original</dt><dd>{{ reg.codigo_original }}</dd><dt>Origen</dt><dd>{{ reg.origen_hoja }} {{ reg.origen_rango or '' }}</dd>
+<dt>Transformaciones</dt><dd>{{ reg.transformaciones or '—' }}</dd><dt>Nombres alternos</dt><dd>{{ (reg.nombres_alternos|json_lista)|join(' | ') or '—' }}</dd><dt>Valores de origen</dt><dd>{{ reg.origen_json or '—' }}</dd></dl></div>
+{% if es_admin %}<div class="card"><a class="btn" href="{{ url_for('panel.editar', id_=reg.id) }}">Editar</a>
+<form style="display:inline" method="post" action="{{ url_for('panel.estado', id_=reg.id) }}">{{ m.csrf() }}<input type="hidden" name="activo" value="{{ '0' if reg.activo else '1' }}"><button class="{{ 'peligro' if reg.activo else '' }}" type="submit">{{ 'Desactivar' if reg.activo else 'Reactivar' }}</button></form></div>
+<form class="card" method="post" action="{{ url_for('panel.asignacion', id_=reg.id) }}">{{ m.csrf() }}<h2>Asignación responsable</h2>
+<label>Sección</label><select name="seccion_id"><option value="">Sin asignar</option>{% for s in secciones %}<option value="{{ s.id }}" {{ 'selected' if reg.seccion_id==s.id }}>{{ s.ruta }} / {{ s.codigo }} · {{ s.nombre }}</option>{% endfor %}</select>
+<label>Usuario (debe pertenecer a la sección)</label><select name="usuario_id"><option value="">Sin asignar</option>{% for u in usuarios_sec %}<option value="{{ u.id }}" {{ 'selected' if reg.usuario_id==u.id }}>{{ u.nombre }} ({{ u.login }})</option>{% endfor %}</select>
+<p><button type="submit">Guardar asignación</button></p></form>{% endif %}{% endblock %}

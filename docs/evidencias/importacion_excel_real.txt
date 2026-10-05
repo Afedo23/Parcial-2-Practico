@@ -1,0 +1,22 @@
+# Importación del Excel real (SQLite local, 2026-10-04) — comando: python -m catalogo.cli importar --detalle
+Migraciones aplicadas: ['0001_inicial']
+--- 1ª ejecución
+Importación #1 de CatalogoServicios.xlsx (sha256 de3b478a5fae…)
+  Nivel 1: creados=12 actualizados=0 omitidos=0 observados=1
+  Nivel 2: creados=46 actualizados=0 omitidos=0 observados=1
+  Filas: {'leidas': 97, 'vacias': 0, 'sin_codigo': 2}
+  Controles: {'n1_esperado': 12, 'n1_distintos_en_archivo': 12, 'n1_en_bd': 12, 'n2_esperado': 46, 'n2_distintos_en_archivo': 46, 'n2_en_bd': 46, 'ok': True}
+  Observaciones (4): {"CONFLICTO_NOMBRE_N1": 1, "FILA_SIN_CODIGO": 2, "N1_DERIVADO": 1}
+   - [FILA_SIN_CODIGO] - fila 42: Fila con datos pero sin código de nivel 2 fuera de una combinación; se omite y no se asigna a ningún servicio.
+   - [FILA_SIN_CODIGO] - fila 67: Fila con datos pero sin código de nivel 2 fuera de una combinación; se omite y no se asigna a ningún servicio.
+   - [N1_DERIVADO] SE.12.3 fila 101: La fila no traía código de nivel 1; se derivó «SE.12» del prefijo del código (existe en el archivo).
+   - [CONFLICTO_NOMBRE_N1] SE.12 fila 99-100: Mismo código con varios nombres. Canónico: «Suministrar Analitica» (fila 99, primera aparición). Evidencia conservada: «Mantener Tableros de Control» (fila 100).
+exit=0
+--- 2ª ejecución (repetida)
+Importación #2 de CatalogoServicios.xlsx (sha256 de3b478a5fae…)
+  Nivel 1: creados=0 actualizados=0 omitidos=12 observados=1
+  Nivel 2: creados=0 actualizados=0 omitidos=46 observados=1
+  Filas: {'leidas': 97, 'vacias': 0, 'sin_codigo': 2}
+  Controles: {'n1_esperado': 12, 'n1_distintos_en_archivo': 12, 'n1_en_bd': 12, 'n2_esperado': 46, 'n2_distintos_en_archivo': 46, 'n2_en_bd': 46, 'ok': True}
+  Observaciones (4): {"CONFLICTO_NOMBRE_N1": 1, "FILA_SIN_CODIGO": 2, "N1_DERIVADO": 1}
+exit=0

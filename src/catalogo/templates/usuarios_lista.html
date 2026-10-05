@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Usuarios</h1>
+<form class="card filtros" method="get">
+<div><label>Buscar</label><input name="q" value="{{ args.get('q','') }}"></div>
+<div><label>Rol</label><select name="rol"><option value="">Todos</option>{% for r in roles %}<option {{ 'selected' if args.get('rol')==r }}>{{ r }}</option>{% endfor %}</select></div>
+<div><label>Estado</label><select name="estado"><option value="">Todos</option><option value="activo" {{ 'selected' if args.get('estado')=='activo' }}>Activo</option><option value="inactivo" {{ 'selected' if args.get('estado')=='inactivo' }}>Inactivo</option></select></div>
+<div><button type="submit">Filtrar</button></div></form>
+{% if es_admin %}<p><a class="btn" href="{{ url_for('usuarios.nuevo') }}">+ Nuevo usuario</a></p>{% endif %}
+<div class="tablewrap"><table><tr><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Puesto</th><th>Empresa</th><th>Estado</th></tr>
+{% for u in filas %}<tr><td><a href="{{ url_for('usuarios.detalle', id_=u.id) }}">{{ u.nombre }}</a></td><td>{{ u.login }}</td><td>{{ u.rol }}</td><td>{{ u.puesto_codigo }} · {{ u.puesto_nombre }}</td><td>{{ u.empresa_codigo }}</td><td>{{ m.estado(u.activo) }}</td></tr>
+{% else %}<tr><td colspan="6">Sin registros.</td></tr>{% endfor %}</table></div>
+{{ m.paginacion(pg, 'usuarios.lista', args) }}{% endblock %}

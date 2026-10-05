@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>{{ etiqueta }}</h1>
+<form class="card filtros" method="get">
+<div><label>Buscar (código o nombre)</label><input name="q" value="{{ args.get('q','') }}"></div>
+{% if padres %}<div><label>{{ etiquetas[nivel] }} · padre</label><select name="padre_id"><option value="">Todos</option>{% for p in padres %}<option value="{{ p.id }}" {{ 'selected' if args.get('padre_id')==p.id|string }}>{{ p.ruta ~ ' / ' if p.ruta }}{{ p.codigo }} · {{ p.nombre }}</option>{% endfor %}</select></div>{% endif %}
+<div><label>Estado</label><select name="estado"><option value="">Todos</option><option value="activo" {{ 'selected' if args.get('estado')=='activo' }}>Activo</option><option value="inactivo" {{ 'selected' if args.get('estado')=='inactivo' }}>Inactivo</option></select></div>
+<div><button type="submit">Filtrar</button></div></form>
+{% if es_admin %}<p><a class="btn" href="{{ url_for('org.nuevo', nivel=nivel) }}">+ Nuevo</a></p>{% endif %}
+<div class="tablewrap"><table><tr><th>Código</th><th>Nombre</th>{% if nivel != 'empresa' %}<th>Ruta (padres)</th>{% endif %}<th>Estado</th></tr>
+{% for f in filas %}<tr><td><a href="{{ url_for('org.detalle', nivel=nivel, id_=f.id) }}">{{ f.codigo }}</a></td><td>{{ f.nombre }}</td>{% if nivel != 'empresa' %}<td>{{ f.ruta }}</td>{% endif %}<td>{{ m.estado(f.activo) }}</td></tr>
+{% else %}<tr><td colspan="4">Sin registros.</td></tr>{% endfor %}</table></div>
+{{ m.paginacion(pg, 'org.lista', args, nivel=nivel) }}
+{% endblock %}

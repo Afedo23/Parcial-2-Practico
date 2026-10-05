@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>{{ reg.codigo }} · {{ reg.nombre }} {{ m.estado(reg.activo) }}</h1>
+<div class="card"><dl><dt>Código original</dt><dd>{{ reg.codigo_original }}</dd><dt>Estado de revisión</dt><dd>{{ reg.estado_revision }}</dd>
+<dt>Origen</dt><dd>{{ reg.origen_hoja or '—' }} {{ reg.origen_rango or '' }}</dd>
+<dt>Nombres alternos (evidencia)</dt><dd>{% for n in reg.nombres_alternos|json_lista %}• {{ n }}
+{% else %}—{% endfor %}</dd><dt>Transformaciones</dt><dd>{{ reg.transformaciones or '—' }}</dd></dl></div>
+{% if es_admin %}<form class="card" method="post">{{ m.csrf() }}<h2>Editar</h2><label>Código</label><input name="codigo" value="{{ reg.codigo }}" required><label>Nombre</label><input name="nombre" value="{{ reg.nombre }}" required><p><button type="submit">Guardar cambios</button></p></form>
+<form class="card" method="post" action="{{ url_for('panel.estado_n1', id_=reg.id) }}">{{ m.csrf() }}<input type="hidden" name="activo" value="{{ '0' if reg.activo else '1' }}"><button class="{{ 'peligro' if reg.activo else '' }}" type="submit">{{ 'Desactivar (baja lógica)' if reg.activo else 'Reactivar' }}</button></form>{% endif %}
+<div class="card"><h2>Servicios de nivel 2</h2><ul>{% for h in hijos %}<li><a href="{{ url_for('panel.ficha', id_=h.id) }}">{{ h.codigo }} · {{ h.nombre }}</a> {{ m.estado(h.activo) }}</li>{% else %}<li>Ninguno.</li>{% endfor %}</ul></div>{% endblock %}

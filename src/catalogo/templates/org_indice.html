@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Estructura organizacional</h1>
+<p>Jerarquía: Empresa → Área → Departamento → Sección → Puesto → Usuario.</p>
+<div class="grid">{% for n in niveles %}<a class="card" href="{{ url_for('org.lista', nivel=n) }}" style="text-decoration:none;color:inherit"><div class="num">{{ conteos[n] }}</div>{{ etiquetas[n] }}</a>{% endfor %}</div>
+{% endblock %}

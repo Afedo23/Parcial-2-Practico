@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Nuevo: {{ etiqueta }}</h1>
+<form class="card" method="post">{{ m.csrf() }}
+{% if fk %}<label>{{ padre_etiqueta }} (padre)</label><select name="{{ fk }}" required><option value="">Seleccione…</option>{% for p in padres %}<option value="{{ p.id }}" {{ 'selected' if reg.get(fk)==p.id|string }}>{{ p.ruta ~ ' / ' if p.ruta }}{{ p.codigo }} · {{ p.nombre }}</option>{% endfor %}</select>{% endif %}
+<label>Código</label><input name="codigo" value="{{ reg.get('codigo','') }}" maxlength="30" required>
+<label>Nombre</label><input name="nombre" value="{{ reg.get('nombre','') }}" maxlength="200" required>
+<p><button type="submit">Guardar</button> <a class="btn sec" href="{{ url_for('org.lista', nivel=nivel) }}">Cancelar</a></p></form>{% endblock %}

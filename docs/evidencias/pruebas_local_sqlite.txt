@@ -1,0 +1,54 @@
+# Pruebas automatizadas — 2026-10-04 — motor SQLite local (entorno del asistente, sin Docker) — Excel real en data/
+$ python -m unittest discover -s tests -v
+test_P01_login_acepta_correo_y_es_insensible_a_mayusculas (test_auth.TestAutenticacion.test_P01_login_acepta_correo_y_es_insensible_a_mayusculas) ... ok
+test_P01_login_valido_e_invalido (test_auth.TestAutenticacion.test_P01_login_valido_e_invalido) ... ok
+test_P02_cierre_de_sesion_invalida_la_credencial (test_auth.TestAutenticacion.test_P02_cierre_de_sesion_invalida_la_credencial) ... ok
+test_P02_sin_sesion_se_rechazan_rutas_y_operaciones (test_auth.TestAutenticacion.test_P02_sin_sesion_se_rechazan_rutas_y_operaciones) ... ok
+test_P02_usuario_inactivo (test_auth.TestAutenticacion.test_P02_usuario_inactivo) ... ok
+test_P03_consulta_lee_pero_no_modifica (test_auth.TestAutenticacion.test_P03_consulta_lee_pero_no_modifica) ... ok
+test_P03_consulta_no_ve_hashes_ni_secretos (test_auth.TestAutenticacion.test_P03_consulta_no_ve_hashes_ni_secretos) ... ok
+test_csrf_obligatorio_en_operaciones_que_modifican (test_auth.TestAutenticacion.test_csrf_obligatorio_en_operaciones_que_modifican) ... ok
+test_hash_con_sal_y_nunca_texto_plano (test_auth.TestAutenticacion.test_hash_con_sal_y_nunca_texto_plano) ... ok
+test_no_se_puede_desactivar_al_ultimo_administrador (test_auth.TestAutenticacion.test_no_se_puede_desactivar_al_ultimo_administrador) ... ok
+test_redireccion_post_login_no_permite_sitios_externos (test_auth.TestAutenticacion.test_redireccion_post_login_no_permite_sitios_externos) ... ok
+test_sesion_expirada_se_rechaza (test_auth.TestAutenticacion.test_sesion_expirada_se_rechaza) ... ok
+test_token_de_sesion_no_se_guarda_en_claro (test_auth.TestAutenticacion.test_token_de_sesion_no_se_guarda_en_claro) ... ok
+test_P06_codigos_se_conservan_como_texto (test_importacion.TestImportacion.test_P06_codigos_se_conservan_como_texto) ... ok
+test_P06_importar_archivo_original (test_importacion.TestImportacion.test_P06_importar_archivo_original) ... ok
+test_P07_repetir_importacion_no_duplica_y_es_trazable (test_importacion.TestImportacion.test_P07_repetir_importacion_no_duplica_y_es_trazable) ... ok
+test_P08_atributos_ausentes_se_conservan_como_desconocidos (test_importacion.TestImportacion.test_P08_atributos_ausentes_se_conservan_como_desconocidos) ... ok
+test_P08_conflicto_SE12_una_sola_entidad_con_evidencia (test_importacion.TestImportacion.test_P08_conflicto_SE12_una_sola_entidad_con_evidencia) ... ok
+test_archivo_inexistente_o_estructura_invalida (test_importacion.TestImportacion.test_archivo_inexistente_o_estructura_invalida) ... ok
+test_celdas_combinadas_y_filas_de_continuacion_con_fixture (test_importacion.TestImportacion.test_celdas_combinadas_y_filas_de_continuacion_con_fixture) ... skipped 'Comprobación específica del archivo de prueba'
+test_importador_no_modifica_el_excel_original (test_importacion.TestImportacion.test_importador_no_modifica_el_excel_original) ... ok
+test_reimportar_conserva_asignaciones_y_baja_logica (test_importacion.TestImportacion.test_reimportar_conserva_asignaciones_y_baja_logica) ... ok
+test_umbral_invertido_y_ausente_no_se_convierte_en_cero (test_importacion.TestImportacion.test_umbral_invertido_y_ausente_no_se_convierte_en_cero) ... ok
+test_P04_crear_jerarquia_completa_y_asignar_usuario_por_la_interfaz (test_org.TestOrganizacion.test_P04_crear_jerarquia_completa_y_asignar_usuario_por_la_interfaz) ... ok
+test_P05_codigo_duplicado_y_referencia_inexistente (test_org.TestOrganizacion.test_P05_codigo_duplicado_y_referencia_inexistente) ... ok
+test_baja_logica_ordenada_y_sin_asociar_a_padres_inactivos (test_org.TestOrganizacion.test_baja_logica_ordenada_y_sin_asociar_a_padres_inactivos) ... ok
+test_codigos_subordinados_unicos_solo_dentro_de_su_padre (test_org.TestOrganizacion.test_codigos_subordinados_unicos_solo_dentro_de_su_padre) ... ok
+test_mover_puesto_no_deja_responsables_inconsistentes (test_org.TestOrganizacion.test_mover_puesto_no_deja_responsables_inconsistentes) ... ok
+test_no_se_pueden_crear_huerfanos_a_nivel_de_base_de_datos (test_org.TestOrganizacion.test_no_se_pueden_crear_huerfanos_a_nivel_de_base_de_datos) ... ok
+test_politica_no_desactivar_con_dependientes_activos (test_org.TestOrganizacion.test_politica_no_desactivar_con_dependientes_activos) ... ok
+test_P12_datos_persisten_tras_reiniciar_aplicacion_y_conexiones (test_persistencia.TestPersistencia.test_P12_datos_persisten_tras_reiniciar_aplicacion_y_conexiones) ... ok
+test_migraciones_idempotentes (test_persistencia.TestPersistencia.test_migraciones_idempotentes) ... ok
+test_P09_dato_ausente_no_se_convierte_en_cero_y_valido_se_guarda (test_servicios.TestServicios.test_P09_dato_ausente_no_se_convierte_en_cero_y_valido_se_guarda) ... ok
+test_P09_minimo_mayor_que_maximo_no_se_guarda (test_servicios.TestServicios.test_P09_minimo_mayor_que_maximo_no_se_guarda) ... ok
+test_P09_restriccion_tambien_en_base_de_datos (test_servicios.TestServicios.test_P09_restriccion_tambien_en_base_de_datos) ... ok
+test_P10_busqueda_filtros_y_paginacion (test_servicios.TestServicios.test_P10_busqueda_filtros_y_paginacion) ... ok
+test_P10_interfaz_de_busqueda_y_filtros (test_servicios.TestServicios.test_P10_interfaz_de_busqueda_y_filtros) ... ok
+test_P11_asignacion_valida_y_cambio_de_seccion_con_responsable (test_servicios.TestServicios.test_P11_asignacion_valida_y_cambio_de_seccion_con_responsable) ... ok
+test_P11_responsable_de_otra_seccion_se_rechaza (test_servicios.TestServicios.test_P11_responsable_de_otra_seccion_se_rechaza) ... ok
+test_asignacion_no_admite_seccion_ni_usuario_inactivos (test_servicios.TestServicios.test_asignacion_no_admite_seccion_ni_usuario_inactivos) ... ok
+test_baja_logica_de_servicio_no_elimina_informacion (test_servicios.TestServicios.test_baja_logica_de_servicio_no_elimina_informacion) ... ok
+test_datos_de_demostracion_incluyen_al_menos_tres_asignaciones_validas (test_servicios.TestServicios.test_datos_de_demostracion_incluyen_al_menos_tres_asignaciones_validas) ...   admin.demo (administrador): creado
+ok
+test_ficha_muestra_todos_los_atributos (test_servicios.TestServicios.test_ficha_muestra_todos_los_atributos) ... ok
+test_nivel1_alta_edicion_y_baja_logica_con_dependencias (test_servicios.TestServicios.test_nivel1_alta_edicion_y_baja_logica_con_dependencias) ... ok
+test_validaciones_servidor_obligatorios_y_referencias (test_servicios.TestServicios.test_validaciones_servidor_obligatorios_y_referencias) ... ok
+
+----------------------------------------------------------------------
+Ran 45 tests in 20.489s
+
+OK (skipped=1)
+exit=0

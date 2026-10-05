@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Servicios de nivel 2</h1>
+<form class="card filtros" method="get">
+<div><label>Buscar (código o nombre)</label><input name="q" value="{{ args.get('q','') }}"></div>
+<div><label>Nivel 1</label><select name="nivel1_id"><option value="">Todos</option>{% for n in n1s %}<option value="{{ n.id }}" {{ 'selected' if args.get('nivel1_id')==n.id|string }}>{{ n.codigo }} · {{ n.nombre }}</option>{% endfor %}</select></div>
+<div><label>Estado</label><select name="estado"><option value="">Todos</option><option value="activo" {{ 'selected' if args.get('estado')=='activo' }}>Activo</option><option value="inactivo" {{ 'selected' if args.get('estado')=='inactivo' }}>Inactivo</option></select></div>
+<div><label>Clase</label><select name="clase_id"><option value="">Todas</option>{% for c in cat.clase %}<option value="{{ c.id }}" {{ 'selected' if args.get('clase_id')==c.id|string }}>{{ c.nombre }}</option>{% endfor %}</select></div>
+<div><label>Criticidad</label><select name="criticidad_id"><option value="">Todas</option>{% for c in cat.criticidad %}<option value="{{ c.id }}" {{ 'selected' if args.get('criticidad_id')==c.id|string }}>{{ c.nombre }}</option>{% endfor %}</select></div>
+<div><label>Tipo</label><select name="tipo_id"><option value="">Todos</option>{% for c in cat.tipo %}<option value="{{ c.id }}" {{ 'selected' if args.get('tipo_id')==c.id|string }}>{{ c.nombre }}</option>{% endfor %}</select></div>
+<div><button type="submit">Buscar</button></div></form>
+{% if es_admin %}<p><a class="btn" href="{{ url_for('panel.nuevo') }}">+ Nuevo servicio</a></p>{% endif %}
+<div class="tablewrap"><table><tr><th>Código</th><th>Nombre</th><th>N1</th><th>Clase</th><th>Criticidad</th><th>Tipo</th><th>Sección</th><th>Estado</th></tr>
+{% for f in filas %}<tr><td><a href="{{ url_for('panel.ficha', id_=f.id) }}">{{ f.codigo }}</a></td><td>{{ f.nombre }} {% if f.estado_revision=='REVISION' %}<span class="badge rev">Revisión</span>{% endif %}</td><td>{{ f.n1_codigo }}</td><td>{{ f.clase or '—' }}</td><td>{{ f.criticidad or '—' }}</td><td>{{ f.tipo or '—' }}</td><td>{{ f.seccion_codigo or '—' }}</td><td>{{ m.estado(f.activo) }}</td></tr>
+{% else %}<tr><td colspan="8">Sin resultados.</td></tr>{% endfor %}</table></div>
+{{ m.paginacion(pg, 'panel.lista', args) }}{% endblock %}

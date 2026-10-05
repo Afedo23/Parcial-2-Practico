@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>Importación #{{ ej.id }} — {{ ej.estado }}</h1>
+<div class="card"><dl><dt>Archivo</dt><dd>{{ ej.archivo }}</dd><dt>SHA-256</dt><dd>{{ ej.sha256 }}</dd><dt>Filas</dt><dd>{{ datos.filas }}</dd><dt>Nivel 1</dt><dd>{{ datos.n1 }}</dd><dt>Nivel 2</dt><dd>{{ datos.n2 }}</dd><dt>Controles</dt><dd>{{ datos.controles }}</dd></dl></div>
+<div class="tablewrap"><table><tr><th>Tipo</th><th>Entidad</th><th>Código</th><th>Hoja / rango</th><th>Detalle</th></tr>
+{% for o in obs %}<tr><td>{{ o.tipo }}</td><td>{{ o.entidad }}</td><td>{{ o.codigo or '—' }}</td><td>{{ o.hoja }} · {{ o.rango }}</td><td>{{ o.detalle }}</td></tr>{% else %}<tr><td colspan="5">Sin observaciones.</td></tr>{% endfor %}</table></div>{% endblock %}

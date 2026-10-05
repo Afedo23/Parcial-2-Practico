@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>{{ etiqueta }}: {{ reg.codigo }} · {{ reg.nombre }} {{ m.estado(reg.activo) }}</h1>
+{% if reg.ruta %}<p>Ruta: {{ reg.ruta }}</p>{% endif %}
+{% if es_admin %}
+<form class="card" method="post">{{ m.csrf() }}<h2>Editar</h2>
+{% if fk %}<label>{{ padre_etiqueta }} (padre)</label><select name="{{ fk }}" required>{% for p in padres %}<option value="{{ p.id }}" {{ 'selected' if reg[fk]==p.id }}>{{ p.ruta ~ ' / ' if p.ruta }}{{ p.codigo }} · {{ p.nombre }}</option>{% endfor %}</select>{% endif %}
+<label>Código</label><input name="codigo" value="{{ reg.codigo }}" maxlength="30" required>
+<label>Nombre</label><input name="nombre" value="{{ reg.nombre }}" maxlength="200" required>
+<p><button type="submit">Guardar cambios</button></p></form>
+<form class="card" method="post" action="{{ url_for('org.estado', nivel=nivel, id_=reg.id) }}">{{ m.csrf() }}
+<input type="hidden" name="activo" value="{{ '0' if reg.activo else '1' }}">
+<button class="{{ 'peligro' if reg.activo else '' }}" type="submit">{{ 'Desactivar (baja lógica)' if reg.activo else 'Reactivar' }}</button>
+<small class="muted"> No se desactiva si tiene dependientes activos.</small></form>
+{% endif %}
+{% if hijo %}<div class="card"><h2>{{ etiquetas[hijo] }} subordinados</h2><ul>{% for h in hijos %}<li><a href="{{ url_for('org.detalle', nivel=hijo, id_=h.id) }}">{{ h.codigo }} · {{ h.nombre }}</a> {{ m.estado(h.activo) }}</li>{% else %}<li>Ninguno.</li>{% endfor %}</ul></div>{% endif %}
+{% if nivel == 'puesto' %}<div class="card"><h2>Usuarios del puesto</h2><ul>{% for u in usuarios %}<li><a href="{{ url_for('usuarios.detalle', id_=u.id) }}">{{ u.nombre }} ({{ u.login }})</a> {{ m.estado(u.activo) }}</li>{% else %}<li>Ninguno.</li>{% endfor %}</ul></div>{% endif %}
+{% endblock %}
