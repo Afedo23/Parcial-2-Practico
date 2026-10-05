@@ -5,7 +5,7 @@ incorpora la estructura organizacional (Empresa → Área → Departamento → S
 responsables a los servicios. Todo corre con Docker; no hace falta instalar Python ni PostgreSQL en el equipo.
 
 - **Integrante:** _Carlos Alfredo Barrientos López_ — **Carné:** _202003948_
-- **Rama de entrega:** `main` — **Etiqueta:** `parcial-v2.0` — **SHA final:** _(completar tras el último commit)_
+- **Rama de entrega:** `main` — **Etiqueta:** `parcial-v2.0` — **SHA final:** _43368a0c7d6f41395672282b8e492b8f4184e9fb_
 - **Documentación de la resolución:** [`docs/RESOLUCION.md`](docs/RESOLUCION.md) · **Contexto para IA:** [`AGENTS.md`](AGENTS.md)
 
 ## Requisitos
