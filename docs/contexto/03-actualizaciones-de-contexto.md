@@ -10,3 +10,10 @@
 - **Motivo (cambio de decisión):** el estudiante indicó que el catedrático clonará y ejecutará todo localmente con Docker.
 - **Cambios:** todo comando de `AGENTS.md` §5 pasa a ejecutarse con `docker compose`; se añadió el perfil `test` con base separada `catalogo_test`; se agregó la regla «no ejecutar `down -v` ni `DROP SCHEMA` fuera de pruebas»; el CLI espera a la BD y migra al arrancar (`catalogo.cli servir`); las pruebas dejaron de depender de códigos concretos del Excel (tras ver que el real usa `SE.01.01` y no `SE.01.1`).
 - **Archivos:** `compose.yaml`, `Dockerfile`, `AGENTS.md` §4–5, `tests/*`.
+
+## Actualización 3 — 28/10/2026: indicación sobre CMDB.xlsx (v3 → v4)
+- **Motivo:** se recibió una nota de voz que corrige una lectura posible del enunciado: el Excel de la CMDB es fuente real (2 CI), no plantilla para fabricar los 5,000 dispositivos.
+- **Cambio de decisión:** separar `origen = EXCEL` de `origen = SINTETICO`; «Base de Datos1» no genera relación; subcategorías marcadas como del Proyecto. Se añadió `AGENTS.md` §8.
+- **Archivos:** `src/catalogo/cmdb.py`, `migraciones/0002_cmdb.sql`, `tests/test_cmdb.py`, `docs/CMDB.md`.
+- **Verificación:** 14 pruebas nuevas; suite completa `Ran 59 tests … OK (skipped=1)` (SQLite local, 28/10/2026).
+- **Pendiente de confirmar:** procedencia de la nota de voz y contenido de la lección 22.

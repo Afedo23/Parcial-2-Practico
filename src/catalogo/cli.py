@@ -8,7 +8,7 @@ import json
 import os
 import sys
 
-from . import org, servicios, usuarios
+from . import cmdb as cmdb_mod, org, servicios, usuarios
 from .db import Conexion, esperar_bd, migrar
 from .errores import ErrorValidacion
 from .importador import ErrorImportacion, importar
@@ -48,7 +48,7 @@ def cmd_importar(a):
     esperar_bd(_url())
     c = _conn()
     migrar(c)
-    ruta = getattr(a, "archivo", None) or os.environ.get("IMPORT_FILE", "data/CatalogoServicios.xlsx")
+    ruta = a.archivo or os.environ.get("IMPORT_FILE", "data/CatalogoServicios.xlsx")
     try:
         resumen, obs = importar(c, ruta)
     except ErrorImportacion as e:
@@ -63,7 +63,7 @@ def cmd_importar(a):
     print("  Filas:", resumen["filas"])
     print("  Controles:", resumen["controles"])
     print(f"  Observaciones ({resumen['observaciones']}): {json.dumps(resumen['por_tipo'], ensure_ascii=False)}")
-    if getattr(a, "detalle", False):
+    if a.detalle:
         for o in obs:
             print(f"   - [{o['tipo']}] {o['codigo'] or '-'} {o['rango']}: {o['detalle']}")
     if not resumen["controles"]["ok"]:
@@ -168,6 +168,72 @@ def cmd_demo(a):
     return 0
 
 
+def cmd_importar_cmdb(a):
+    """Importa data/CMDB.xlsx: fuente real de 2 CI (Hardware y Software como categorías de origen)."""
+    esperar_bd(_url())
+    c = _conn()
+    migrar(c)
+    ruta = a.archivo or os.environ.get("CMDB_FILE", "data/CMDB.xlsx")
+    try:
+        resumen, obs = cmdb_mod.importar_cmdb(c, ruta)
+    except ErrorImportacion as e:
+        print(f"ERROR de importación CMDB: {e}", file=sys.stderr)
+        return 2
+    finally:
+        c.cerrar()
+    print(f"Importación CMDB #{resumen['ejecucion_id']} de {resumen['archivo']} (sha256 {resumen['sha256'][:12]}…)")
+    print("  CI:", resumen["ci"], "| filas con datos:", resumen["filas_con_datos"], "| encabezados corregidos:", resumen["encabezados_corregidos"])
+    print(f"  Observaciones ({resumen['observaciones']}): {json.dumps(resumen['por_tipo'], ensure_ascii=False)}")
+    if a.detalle:
+        for o in obs:
+            print(f"   - [{o['tipo']}] {o['codigo'] or '-'} {o['rango']}: {o['detalle']}")
+    return 0
+
+
+def cmd_generar_cmdb(a):
+    """Genera datos SINTÉTICOS (no del Excel). Reproducible con --semilla; repetir no duplica."""
+    esperar_bd(_url())
+    c = _conn()
+    migrar(c)
+    try:
+        r = cmdb_mod.generar_sinteticos(c, a.semilla, a.dispositivos)
+    except ErrorValidacion as e:
+        print("ERROR:", e, file=sys.stderr)
+        return 4
+    finally:
+        c.cerrar()
+    print("Generación sintética:", json.dumps(r, ensure_ascii=False))
+    return 0 if (a.dispositivos < 5000 or r["dispositivos_en_bd"] >= 5000) else 3
+
+
+def cmd_reporte_cmdb(_a):
+    esperar_bd(_url())
+    c = _conn()
+    try:
+        r = cmdb_mod.reporte(c)
+    finally:
+        c.cerrar()
+    print(f"CI totales={r['ci_total']} (Excel={r['ci_excel']}, sintéticos={r['ci_sinteticos']}) · dispositivos sintéticos={r['dispositivos_sinteticos']} · relaciones={r['relaciones']}")
+    print("Cantidades por nivel y categoría (CI directos / en el subárbol):")
+    for nivel, prof, cod, nom, origen, directos, total in r["por_categoria"]:
+        print(f"  N{nivel} {'  ' * prof}{nom} [{cod}, {origen}]: {directos} / {total}")
+    return 0
+
+
+def cmd_borrar_cmdb_sinteticos(a):
+    """Borrado explícito de datos sintéticos de la CMDB (nunca ocurre al arrancar)."""
+    if not a.confirmar:
+        print("Operación destructiva: agregue --confirmar para borrar los CI sintéticos (los del Excel no se tocan).", file=sys.stderr)
+        return 5
+    esperar_bd(_url())
+    c = _conn()
+    try:
+        print("CI sintéticos eliminados:", cmdb_mod.borrar_sinteticos(c))
+    finally:
+        c.cerrar()
+    return 0
+
+
 def cmd_persistencia(a):
     """Apoyo a P12: crea / verifica un registro marcador que debe sobrevivir al reinicio de contenedores."""
     esperar_bd(_url())
@@ -197,6 +263,18 @@ def main(argv=None):
     sub.add_parser("cuentas", help="crea cuentas de evaluación (administrador y consulta)").set_defaults(f=cmd_cuentas)
     sub.add_parser("datos-demo", help="estructura de demostración y asignaciones").set_defaults(f=cmd_datos_demo)
     sub.add_parser("demo", help="preparar + importar + cuentas + datos-demo").set_defaults(f=cmd_demo)
+    ic = sub.add_parser("importar-cmdb", help="importa data/CMDB.xlsx (fuente real; repetible)")
+    ic.add_argument("--archivo")
+    ic.add_argument("--detalle", action="store_true")
+    ic.set_defaults(f=cmd_importar_cmdb)
+    gc = sub.add_parser("generar-cmdb", help="genera dispositivos SINTÉTICOS (semilla configurable)")
+    gc.add_argument("--semilla", type=int, default=2026)
+    gc.add_argument("--dispositivos", type=int, default=5000)
+    gc.set_defaults(f=cmd_generar_cmdb)
+    sub.add_parser("reporte-cmdb", help="cantidades por nivel y categoría").set_defaults(f=cmd_reporte_cmdb)
+    bc = sub.add_parser("borrar-cmdb-sinteticos", help="borrado EXPLÍCITO de datos sintéticos")
+    bc.add_argument("--confirmar", action="store_true")
+    bc.set_defaults(f=cmd_borrar_cmdb_sinteticos)
     pe = sub.add_parser("persistencia", help="marcador para la prueba P12")
     pe.add_argument("accion", choices=["crear", "verificar"])
     pe.set_defaults(f=cmd_persistencia)

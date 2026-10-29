@@ -72,8 +72,8 @@ def create_app(config=None):
     def no_encontrado(_e):
         return render_template("error.html", codigo=404, mensaje="Recurso no encontrado."), 404
 
-    from .vistas import auth, importaciones, organizacion, servicios, usuarios as vusuarios
+    from .vistas import auth, cmdb as vcmdb, importaciones, organizacion, servicios, usuarios as vusuarios
 
-    for modulo in (auth, organizacion, vusuarios, servicios, importaciones):
+    for modulo in (auth, organizacion, vusuarios, servicios, importaciones, vcmdb):
         app.register_blueprint(modulo.bp)
     return app

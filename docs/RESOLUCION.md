@@ -1,6 +1,6 @@
 # Resolución del parcial — Sistema de gestión del catálogo de servicios de TI
 
-**Asignatura:** Software Avanzado · **Estudiante:** _(completar)_ · **Carné:** _(completar)_ · **Fecha:** 04/10/2026
+**Asignatura:** Software Avanzado · **Estudiante:** _Carlos Alfredo Barrientos López_ · **Carné:** _202003948_ · **Fecha:** 04/10/2026
 
 ## 1. Problema, alcance y supuestos
 Sistematizar el catálogo de servicios de TI (hoja «Servicios Externos» del Excel) en una aplicación web con autenticación local, base de datos persistente,

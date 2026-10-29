@@ -84,6 +84,16 @@ class Conexion:
     def ejecutar(self, sql, params=()):
         return self._exec(sql, params).rowcount
 
+    def ejecutar_muchos(self, sql, lista):
+        """Inserciones/actualizaciones por lotes (mismo SQL, muchos parámetros)."""
+        if not lista:
+            return
+        if self.sqlite:
+            self.con.executemany(self._sql(sql), [self._params(p) for p in lista])
+        else:
+            with self.con.cursor() as cur:
+                cur.executemany(self._sql(sql), [self._params(p) for p in lista])
+
     def insertar(self, sql, params=()):
         return self.uno(sql + " RETURNING id", params)["id"]
 

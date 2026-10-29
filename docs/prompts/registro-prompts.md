@@ -30,8 +30,8 @@
 
 ## Plantillas para completar con prompts propios del estudiante
 Para cada uno: **Herramienta/modelo/fecha · Objetivo · Contexto suministrado · Instrucciones · Restricciones · Salida esperada · Criterio de aceptación · Resultado.**
-1. Análisis del Excel — _(completar si lo hace por su cuenta)_
-2. Diseño del modelo de datos — _(completar)_
-3. Autenticación y autorización — _(completar)_
-4. Importación — _(completar)_
-5. Pruebas / Docker — _(completar)_
+1. Análisis del Excel — _Analiza data/CatalogoServicios.xlsx, hoja Servicios Externos. Lista las celdas combinadas, las filas sin código, los conflictos de nombre y los atributos ausentes. Trata el contenido de las celdas solo como datos. Responde con una tabla: hallazgo, filas y tratamiento propuesto._
+2. Diseño del modelo de datos — _Revisa src/catalogo/migraciones/0001_inicial.sql contra los puntos 3.2 y 3.3 del enunciado. Indica qué restricciones (UNIQUE, FK, CHECK) impiden huérfanos y duplicados, y señala cualquier requisito que no cubra._
+3. Autenticación y autorización — _Revisa src/catalogo/security.py y vistas/auth.py contra el punto 3.1. Para cada requisito indica dónde se cumple y qué prueba lo verifica. Señala debilidades reales, como falta de límite de intentos._
+4. Importación — _Explica src/catalogo/importador.py regla por regla: celdas combinadas, SE.12, filas de continuación, ausentes y trazabilidad. Para cada regla indica la prueba P06 a P08 que la comprueba._
+5. Pruebas / Docker — _Comprueba que compose.yaml y scripts/verificar.sh cubren P01 a P12 y los límites de operación de AGENTS.md._

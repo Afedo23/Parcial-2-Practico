@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>CMDB — Clasificación jerárquica y cantidades</h1>
+<div class="card"><dl><dt>CI totales</dt><dd>{{ rep.ci_total }}</dd><dt>CI del Excel (reales)</dt><dd>{{ rep.ci_excel }}</dd><dt>CI sintéticos</dt><dd>{{ rep.ci_sinteticos }}</dd>
+<dt>Dispositivos sintéticos (Hardware)</dt><dd>{{ rep.dispositivos_sinteticos }}</dd><dt>Relaciones</dt><dd>{{ rep.relaciones }}</dd></dl>
+<small class="muted">«Excel» = categoría de origen tomada de CMDB.xlsx. «Proyecto» = subcategoría definida por el proyecto para los datos sintéticos.</small></div>
+<div class="tablewrap"><table><tr><th>Nivel</th><th>Categoría</th><th>Código</th><th>Origen</th><th>CI directos</th><th>CI en el subárbol</th></tr>
+{% for f in arbol %}<tr><td>{{ f.nivel }}</td><td>{{ '— ' * f.prof }}{{ f.nombre }}</td><td>{{ f.codigo }}</td><td>{{ 'Excel' if f.origen=='EXCEL' else 'Proyecto' }}</td><td>{{ f.directos }}</td><td>{{ f.total }}</td></tr>{% endfor %}</table></div>{% endblock %}

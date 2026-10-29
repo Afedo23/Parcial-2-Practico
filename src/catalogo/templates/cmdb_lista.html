@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>CMDB — Elementos de configuración</h1>
+<p><a class="btn sec" href="{{ url_for('cmdb.clasificacion') }}">Clasificación y cantidades</a></p>
+<form class="card filtros" method="get">
+<div><label>Buscar (código, nombre o serie)</label><input name="q" value="{{ args.get('q','') }}"></div>
+<div><label>Clasificación (incluye subcategorías)</label><select name="clasificacion_id"><option value="">Todas</option>{% for c in arbol %}<option value="{{ c.id }}" {{ 'selected' if args.get('clasificacion_id')==c.id|string }}>{{ '— ' * c.prof }}{{ c.nombre }} ({{ c.total }})</option>{% endfor %}</select></div>
+<div><label>Estado</label><select name="estado"><option value="">Todos</option>{% for e in estados %}<option {{ 'selected' if args.get('estado')==e }}>{{ e }}</option>{% endfor %}</select></div>
+<div><label>Ubicación</label><select name="ubicacion_id"><option value="">Todas</option>{% for u in ubicaciones %}<option value="{{ u.id }}" {{ 'selected' if args.get('ubicacion_id')==u.id|string }}>{{ u.nombre }}</option>{% endfor %}</select></div>
+<div><label>Origen del dato</label><select name="origen"><option value="">Todos</option><option value="EXCEL" {{ 'selected' if args.get('origen')=='EXCEL' }}>Excel (real)</option><option value="SINTETICO" {{ 'selected' if args.get('origen')=='SINTETICO' }}>Sintético</option></select></div>
+<div><button type="submit">Buscar</button></div></form>
+<div class="tablewrap"><table><tr><th>Código</th><th>Nombre</th><th>Clasificación</th><th>Estado</th><th>Ubicación</th><th>Origen</th></tr>
+{% for f in filas %}<tr><td><a href="{{ url_for('cmdb.ficha', id_=f.id) }}">{{ f.codigo }}</a></td><td>{{ f.nombre }}</td><td>{{ f.clasificacion }}</td><td>{{ f.estado_actual or '—' }}</td><td>{{ f.ubicacion or '—' }}</td><td><span class="badge {{ 'on' if f.origen=='EXCEL' else '' }}">{{ 'Excel' if f.origen=='EXCEL' else 'Sintético' }}</span></td></tr>
+{% else %}<tr><td colspan="6">Sin resultados. Importe CMDB.xlsx y genere los datos sintéticos desde la línea de comandos.</td></tr>{% endfor %}</table></div>
+{{ m.paginacion(pg, 'cmdb.lista', args) }}{% endblock %}

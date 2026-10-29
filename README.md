@@ -5,7 +5,7 @@ incorpora la estructura organizacional (Empresa → Área → Departamento → S
 responsables a los servicios. Todo corre con Docker; no hace falta instalar Python ni PostgreSQL en el equipo.
 
 - **Integrante:** _Carlos Alfredo Barrientos López_ — **Carné:** _202003948_
-- **Rama de entrega:** `main` — **Etiqueta:** `parcial-v2.0` — **SHA final:** _43368a0c7d6f41395672282b8e492b8f4184e9fb_
+- **Rama de entrega:** `main` — **Etiqueta:** `parcial-v3.0` — **SHA final:** _(completar tras el último commit)_
 - **Documentación de la resolución:** [`docs/RESOLUCION.md`](docs/RESOLUCION.md) · **Contexto para IA:** [`AGENTS.md`](AGENTS.md)
 
 ## Requisitos
@@ -53,6 +53,16 @@ Se crean con las variables `DEMO_*` de `.env` (valores por defecto de `.env.exam
 
 `datos-demo` agrega los usuarios `ana.soporte` y `luis.monitoreo` (rol consulta, misma contraseña de consulta) y 4 servicios asignados
 a secciones/responsables válidos. Son credenciales exclusivamente de demostración.
+
+## CMDB (ampliación)
+
+```bash
+docker compose exec app python -m catalogo.cli importar-cmdb --detalle   # data/CMDB.xlsx: fuente REAL (2 CI; Hardware y Software como categorías de origen)
+docker compose exec app python -m catalogo.cli generar-cmdb              # 5,000 dispositivos SINTÉTICOS (--semilla N; repetir no duplica)
+docker compose exec app python -m catalogo.cli reporte-cmdb              # cantidades por nivel y categoría
+docker compose exec app python -m catalogo.cli borrar-cmdb-sinteticos --confirmar   # borrado EXPLÍCITO (no ocurre al arrancar)
+```
+Requiere haber ejecutado antes `importar` (catálogo) y `cuentas`. Detalle, mapeo de fuentes y decisiones: [`docs/CMDB.md`](docs/CMDB.md). Pantalla: **/cmdb/**.
 
 ## Qué revisar en la interfaz
 

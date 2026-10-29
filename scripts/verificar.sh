@@ -11,6 +11,10 @@ echo "== 4/6 Importación del Excel original (2 veces: la segunda no debe crear 
 docker compose exec -T app python -m catalogo.cli importar
 docker compose exec -T app python -m catalogo.cli importar | tee /tmp/segunda_importacion.txt
 grep -q "creados=0 actualizados=0" /tmp/segunda_importacion.txt || { echo "FALLO: la reimportación no fue idempotente"; exit 1; }
-echo "== 5/6 Cuentas y datos de demostración"; docker compose exec -T app python -m catalogo.cli datos-demo
+echo "== 5/6 Cuentas, demostración y CMDB"; docker compose exec -T app python -m catalogo.cli datos-demo
+docker compose exec -T app python -m catalogo.cli importar-cmdb
+docker compose exec -T app python -m catalogo.cli generar-cmdb
+docker compose exec -T app python -m catalogo.cli generar-cmdb | tee /tmp/segunda_cmdb.txt
+grep -q '"creados": 0, "actualizados": 0' /tmp/segunda_cmdb.txt || { echo "FALLO: la regeneración sintética no fue idempotente"; exit 1; }
 echo "== 6/6 Persistencia (P12)";               bash scripts/p12_persistencia.sh
 echo "TODO OK"

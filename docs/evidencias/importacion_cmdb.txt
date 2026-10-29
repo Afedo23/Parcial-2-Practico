@@ -1,0 +1,45 @@
+# Evidencia CMDB (SQLite local, 2026-10-28; entorno del asistente, sin Docker)
+$ python -m catalogo.cli importar-cmdb --detalle
+Importación CMDB #2 de CMDB.xlsx (sha256 d182796bb40b…)
+  CI: {'creados': 2, 'actualizados': 0, 'omitidos': 0, 'observados': 2} | filas con datos: 2 | encabezados corregidos: 2
+  Observaciones (5): {"ENLACE_MARCADOR": 2, "RELACION_SIN_CI": 2, "UBICACION_ES_CI": 1}
+   - [ENLACE_MARCADOR] CI-XLS-SERVIDOR1 fila 5: Los enlaces contienen el marcador literal «(url)»; se conserva el texto.
+   - [UBICACION_ES_CI] CI-XLS-APLICACION fila 6: La ubicación «Servidor1» coincide con el nombre de un CI; se conserva como texto sin crear relación.
+   - [ENLACE_MARCADOR] CI-XLS-APLICACION fila 6: Los enlaces contienen el marcador literal «(url)»; se conserva el texto.
+   - [RELACION_SIN_CI] CI-XLS-SERVIDOR1 fila 5: «Base de Datos1» (columna Relaciones) no corresponde a ningún CI existente; se conserva el texto y NO se crea relación.
+   - [RELACION_SIN_CI] CI-XLS-APLICACION fila 6: «Base de Datos1» (columna Relaciones) no corresponde a ningún CI existente; se conserva el texto y NO se crea relación.
+exit=0
+$ python -m catalogo.cli importar-cmdb   (repetida)
+Importación CMDB #3 de CMDB.xlsx (sha256 d182796bb40b…)
+  CI: {'creados': 0, 'actualizados': 0, 'omitidos': 2, 'observados': 2} | filas con datos: 2 | encabezados corregidos: 2
+  Observaciones (5): {"ENLACE_MARCADOR": 2, "RELACION_SIN_CI": 2, "UBICACION_ES_CI": 1}
+exit=0
+$ python -m catalogo.cli generar-cmdb --semilla 2026 --dispositivos 5000
+Generación sintética: {"semilla": 2026, "solicitados": 5000, "creados": 5400, "actualizados": 0, "omitidos": 0, "relaciones_nuevas": 5110, "vinculos_servicio_nuevos": 280, "aristas_dependencia": 1410, "dispositivos_en_bd": 5000, "ci_sinteticos_en_bd": 5400, "segundos": 0.19}
+exit=0
+$ (repetida)
+Generación sintética: {"semilla": 2026, "solicitados": 5000, "creados": 0, "actualizados": 0, "omitidos": 5400, "relaciones_nuevas": 0, "vinculos_servicio_nuevos": 0, "aristas_dependencia": 1410, "dispositivos_en_bd": 5000, "ci_sinteticos_en_bd": 5400, "segundos": 0.16}
+exit=0
+$ python -m catalogo.cli reporte-cmdb
+CI totales=5402 (Excel=2, sintéticos=5400) · dispositivos sintéticos=5000 · relaciones=5110
+Cantidades por nivel y categoría (CI directos / en el subárbol):
+  N1 Hardware [CLS-HARDWARE, EXCEL]: 1 / 5001
+  N2   Infraestructura de soporte [HW-INFRA, PROYECTO]: 0 / 300
+  N3     Almacenamiento [HW-ALMACENAMIENTO, PROYECTO]: 100 / 100
+  N3     UPS [HW-UPS, PROYECTO]: 200 / 200
+  N2   Periféricos [HW-PERIFERICOS, PROYECTO]: 0 / 250
+  N3     Impresora [HW-IMPRESORA, PROYECTO]: 250 / 250
+  N2   Puestos de usuario [HW-PUESTOS, PROYECTO]: 0 / 3300
+  N3     Estación de trabajo [HW-ESTACION, PROYECTO]: 1800 / 1800
+  N3     Laptop [HW-LAPTOP, PROYECTO]: 1500 / 1500
+  N2   Equipos de red [HW-RED, PROYECTO]: 0 / 350
+  N3     Firewall [HW-FIREWALL, PROYECTO]: 40 / 40
+  N3     Router [HW-ROUTER, PROYECTO]: 60 / 60
+  N3     Switch [HW-SWITCH, PROYECTO]: 250 / 250
+  N2   Servidores [HW-SERVIDORES, PROYECTO]: 0 / 800
+  N3     Servidor físico [HW-SRV-FISICO, PROYECTO]: 300 / 300
+  N3     Servidor virtual [HW-SRV-VIRTUAL, PROYECTO]: 500 / 500
+  N1 Software [CLS-SOFTWARE, EXCEL]: 1 / 401
+  N2   Aplicación [SW-APLICACION, PROYECTO]: 200 / 200
+  N2   Base de datos [SW-BD, PROYECTO]: 80 / 80
+  N2   Sistema operativo [SW-SO, PROYECTO]: 120 / 120

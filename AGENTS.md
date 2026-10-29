@@ -1,6 +1,6 @@
 # AGENTS.md — contexto versionado para asistentes de IA
 
-> Léalo completo antes de actuar. Versión del contexto: **v3** (ver historial en `docs/contexto/03-actualizaciones-de-contexto.md`).
+> Léalo completo antes de actuar. Versión del contexto: **v4** (ver historial en `docs/contexto/03-actualizaciones-de-contexto.md`).
 
 ## 1. Objetivo y alcance
 Aplicación web (Flask + PostgreSQL + Docker) que sistematiza `data/CatalogoServicios.xlsx` (hoja «Servicios Externos»), con autenticación local, roles
@@ -26,6 +26,9 @@ No se implementan tickets, facturación ni consumo de servicios. La aplicación 
   (`reiniciar_bd_de_pruebas` se niega si el nombre no contiene «test»).
 - No introducir dependencias de red/IA en tiempo de ejecución. No incluir credenciales reales en Git.
 - Baja lógica en lugar de borrado; nunca eliminar información de manera silenciosa.
+
+- Cada acción relevante del asistente (comando, motivo, resultado) se anota en `docs/evidencias/bitacora-acciones.md`.
+- Los permisos efectivos están en `.claude/settings.json` (allow/deny); lo no permitido requiere aprobación humana.
 
 ## 5. Comandos del proyecto (todo con Docker)
 | Acción | Comando |
@@ -53,3 +56,9 @@ Prueba rápida sin Docker (solo para el asistente, SQLite): `PYTHONPATH=src pyth
 4. Reimportar no duplica ni pisa asignaciones (`seccion_id`, `usuario_id`) ni la baja lógica.
 5. Responsable de un servicio N2 = usuario activo de un puesto de **esa misma sección** activa.
 6. No se desactiva un registro con dependientes activos; no se asocian registros a padres inactivos.
+
+## 8. CMDB (ampliación, v4)
+- `data/CMDB.xlsx` es una **fuente de datos real** de 2 CI; **no** es plantilla para inventar dispositivos. Se valida su encabezado (B4:U4) y se conservan Hardware y Software como categorías de origen.
+- Cada CI importado tiene código estable (`CI-XLS-<NOMBRE>`) y referencia a hoja/fila. Un texto de «Relaciones» sin CI existente se conserva con observación; **jamás** se crea una relación inventada.
+- Los 5,000 dispositivos son **sintéticos** (`origen = SINTETICO`), se generan con `generar-cmdb` (semilla configurable) y no se presentan como datos del Excel. Las subcategorías son del proyecto (`origen = PROYECTO`), no transcripción de la lección 22.
+- Relaciones `depende_de`/`alojado_en` no admiten ciclos; `conectado_a`/`relacionado_con` sí. La jerarquía de clasificación rechaza padres inexistentes y ciclos.

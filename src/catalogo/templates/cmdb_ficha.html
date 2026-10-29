@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block contenido %}
+<h1>{{ ci.codigo }} · {{ ci.nombre }} <span class="badge {{ 'on' if ci.origen=='EXCEL' else '' }}">{{ 'Dato del Excel' if ci.origen=='EXCEL' else 'Dato sintético' }}</span></h1>
+<div class="card"><dl>
+<dt>Clasificación</dt><dd>{{ ci.clasificacion_ruta }}</dd><dt>Estado actual</dt><dd>{{ ci.estado_actual or '—' }}</dd>
+<dt>Descripción</dt><dd>{{ ci.descripcion or '—' }}</dd><dt>Número de serie</dt><dd>{{ ci.numero_serie or '—' }}</dd><dt>Versión</dt><dd>{{ ci.version or '—' }}</dd>
+<dt>Fecha de adquisición</dt><dd>{{ ci.fecha_adquisicion or '—' }}</dd><dt>Ubicación</dt><dd>{{ ci.ubicacion_nombre or ci.ubicacion_texto or '—' }}</dd>
+<dt>Propietario / responsable</dt><dd>{{ ci.responsable_nombre or ci.propietario_texto or '—' }}</dd>
+<dt>Niveles de seguridad</dt><dd>{{ ci.nivel_seguridad or '—' }}</dd><dt>Cumplimiento</dt><dd>{{ ci.cumplimiento or '—' }}</dd><dt>Estado de configuración</dt><dd>{{ ci.estado_configuracion or '—' }}</dd>
+<dt>Licencia / vencimiento</dt><dd>{{ ci.numero_licencia or '—' }} / {{ ci.fecha_vencimiento or '—' }}</dd>
+<dt>Relaciones (texto original)</dt><dd>{{ ci.relaciones_texto or '—' }}</dd><dt>Padres/Hijos (texto original)</dt><dd>{{ ci.padres_hijos_texto or '—' }}</dd>
+<dt>Atributos técnicos</dt><dd>{% for k, v in ci.atributos.items() %}{{ k }}: {{ v }}
+{% else %}—{% endfor %}</dd></dl></div>
+{% if ci.origen_fila %}<div class="card"><h2>Trazabilidad</h2><dl><dt>Origen</dt><dd>{{ ci.origen_hoja }} · fila {{ ci.origen_fila }}</dd><dt>Valores originales</dt><dd>{{ ci.origen_json }}</dd></dl></div>{% endif %}
+<div class="card"><h2>Relaciones técnicas</h2>
+<p><strong>Este CI →</strong></p><ul>{% for r in ci.sale %}<li>{{ r.tipo }} → <a href="{{ url_for('cmdb.ficha', id_=r.id) }}">{{ r.codigo }}</a> ({{ r.nombre }})</li>{% else %}<li>Ninguna.</li>{% endfor %}</ul>
+<p><strong>→ Este CI</strong></p><ul>{% for r in ci.entra %}<li><a href="{{ url_for('cmdb.ficha', id_=r.id) }}">{{ r.codigo }}</a> ({{ r.nombre }}) {{ r.tipo }} →</li>{% else %}<li>Ninguna.</li>{% endfor %}</ul>
+{% if es_admin %}<form method="post" action="{{ url_for('cmdb.nueva_relacion', id_=ci.id) }}">{{ m.csrf() }}<div class="filtros"><div><label>Tipo</label><select name="tipo">{% for t in tipos %}<option>{{ t }}</option>{% endfor %}</select></div><div><label>Código del CI destino</label><input name="destino_codigo" required></div><div><button type="submit">Agregar relación</button></div></div></form>{% endif %}</div>
+<div class="card"><h2>Servicios vinculados</h2><ul>{% for s in ci.servicios %}<li><a href="{{ url_for('panel.ficha', id_=s.id) }}">{{ s.codigo }} · {{ s.nombre }}</a></li>{% else %}<li>Ninguno.</li>{% endfor %}</ul></div>
+<div class="card"><h2>Servicios potencialmente afectados</h2><p><small class="muted">{{ ci.impacto.aviso }} CI que dependen de este: {{ ci.impacto.ci_alcanzados }}.</small></p>
+<ul>{% for s in ci.impacto.servicios %}<li>{{ s.codigo }} · {{ s.nombre }} (vía {{ s.ci_codigo }}, distancia {{ s.distancia }})</li>{% else %}<li>Ninguno identificado.</li>{% endfor %}</ul></div>
+<div class="card"><h2>Historial de tickets</h2><small class="muted">El módulo de tickets no forma parte de esta entrega; la vinculación CI–ticket queda pendiente.</small></div>{% endblock %}
